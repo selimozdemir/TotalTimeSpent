@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="Selim_TTS" title="Total Time Spent On Forum" version_string="1.4.0" version_id="1"
+       url="https://xenforo.web.tr" install_callback_class="Selim_TotalTimeSpent_Install"
+       install_callback_method="installer" uninstall_callback_class="Selim_TotalTimeSpent_Install"
+       uninstall_callback_method="uninstaller">
+    <admin_navigation/>
+    <admin_permissions/>
+    <admin_style_properties/>
+    <admin_templates/>
+    <admin_template_modifications/>
+    <code_events/>
+    <code_event_listeners>
+        <listener event_id="load_class_controller" execute_order="10" callback_class="Selim_TotalTimeSpent_Listener"
+                  callback_method="extendController" active="1" hint="" description=""/>
+        <listener event_id="load_class_model" execute_order="10" callback_class="Selim_TotalTimeSpent_Listener"
+                  callback_method="extendModel" active="1" hint="" description=""/>
+    </code_event_listeners>
+    <cron>
+        <entry entry_id="selim_tts" cron_class="Selim_TotalTimeSpent_CronEntry" cron_method="runHourly" active="1">
+            <![CDATA[{"day_type":"dom","dom":["-1"],"hours":["-1"],"minutes":["0"]}]]></entry>
+    </cron>
+    <email_templates/>
+    <email_template_modifications/>
+    <optiongroups/>
+    <permissions>
+        <permission_groups/>
+        <permissions/>
+        <interface_groups/>
+    </permissions>
+    <phrases>
+        <phrase title="cron_entry_selim_tts" version_id="1" version_string="1.4.0">
+            <![CDATA[TTS Clear Session Activities]]></phrase>
+        <phrase title="most_online_users" version_id="1" version_string="1.0">
+            <![CDATA[En Çok Online Kullanıcılar]]></phrase>
+        <phrase title="online_time" version_id="1" version_string="1.0"><![CDATA[Online Süresi]]></phrase>
+    </phrases>
+    <route_prefixes/>
+    <style_properties/>
+    <templates/>
+    <public_template_modifications>
+        <modification template="member_view" modification_key="selim_tts_member_view" description=""
+                      execution_order="10" enabled="1" action="preg_replace">
+            <find><![CDATA[/<xen:if is="\{\$customFieldsGrouped\.personal\}">(.*?)<\/xen:if>/is]]></find>
+            <replace><![CDATA[<xen:if is="{$customFieldsGrouped.personal}">$1</xen:if>
+<dl><dt>{xen:phrase online_time}:</dt> <dd>{$user.spent_time}</dd></dl>]]></replace>
+        </modification>
+        <modification template="member_notable" modification_key="selim_tts_memberlist" description=""
+                      execution_order="10" enabled="1" action="preg_replace">
+            <find><![CDATA[/<ul class="tabs">(.*?)<\/ul>/is]]></find>
+            <replace><![CDATA[<ul class="tabs">
+$1
+<li class="{xen:if '{$type} == "online"', active}"><a href="{xen:link members, '', 'type=online'}">{xen:phrase most_online_users}</a></li>
+</ul>]]></replace>
+        </modification>
+        <modification template="member_notable" modification_key="selim_tts_memberlist_spentime" description=""
+                      execution_order="10" enabled="1" action="preg_replace">
+            <find><![CDATA[/<span class="bigNumber">(.*?)<\/span>/is]]></find>
+            <replace><![CDATA[<span class="bigNumber">
+<xen:if is="{$type} == 'online'">
+{$user.{$bigKey}}
+<xen:else />
+$1
+</xen:if>
+</span>]]></replace>
+        </modification>
+    </public_template_modifications>
+    <bb_code_media_sites/>
+    <bb_codes/>
+</addon>
